@@ -19,8 +19,8 @@ sessionRouter.post(Paths.Session.New, SessionRoutes.createSession);
 
 apiRouter.post(
   Paths.Session.Save,
-  validate(['sessionId', 'string', 'body'], ['email', 'string', 'body'])
-  // TODO
+  validate(['sessionId', 'string', 'body'], ['email', 'string', 'body']),
+  SessionRoutes.saveSession
 );
 
 contestRouter.get(

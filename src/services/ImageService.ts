@@ -3,10 +3,6 @@ import path from 'path';
 import fs from 'fs';
 import { randomInt } from 'crypto';
 
-// **** Variables **** //
-
-// **** Functions **** //
-
 /**
  * Generate image off of prompt
  */

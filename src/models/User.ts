@@ -10,9 +10,8 @@ interface IUserDocument extends Document {
 
 const UserSchema: Schema = new Schema(
   {
-    id: { type: Number, required: true, unique: true, index: true },
-    currentSessionId: { type: String, required: true },
-    email: { type: String, required: false },
+    currentSessionId: { type: String, required: true, unique: true },
+    email: { type: String, required: true },
     solanaAddress: { type: String, required: false },
     telegramHandle: { type: String, required: false },
   },
