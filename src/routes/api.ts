@@ -50,7 +50,7 @@ contestRouter.get(
 // Submit
 contestRouter.post(
   Paths.Contest.Submit,
-  validate(['prompt', 'string', 'body']),
+  validate(['prompt', 'string', 'body'], ['user', User.isUser, 'body']),
   ContestRoutes.submitPrompt
 );
 

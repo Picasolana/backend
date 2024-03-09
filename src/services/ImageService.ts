@@ -1,5 +1,7 @@
-import { Score } from '@src/models/Contest';
 import env from '@src/constants/EnvVars';
+import path from 'path';
+import fs from 'fs';
+import { randomInt } from 'crypto';
 
 // **** Variables **** //
 
@@ -53,18 +55,17 @@ async function generateImage(prompt: string) {
   if (responseJSON) {
     return responseJSON.artifacts[0].base64;
   }
+  throw new Error('No response');
 }
 
-function scoreImage(
-  userImage: ImageBitmap,
-  objectiveImage: ImageBitmap
-): Score {
-  //Compare the user and objective image and return a score
-  const score: Score = {
-    similarityScore: 0, // TODO
-  };
+function targetImage() {
+  const imagePath = path.join(__dirname, '../public/images/picasso.jpg');
+  return fs.readFileSync(imagePath).toString('base64');
+}
 
-  return score;
+function scoreImage(userImage: string, targetImage: string): number {
+  // TODO implement actual comparing logic
+  return randomInt(0, 100);
 }
 
 // **** Export default **** //
@@ -72,4 +73,5 @@ function scoreImage(
 export default {
   generateImage,
   scoreImage,
+  targetImage,
 };
