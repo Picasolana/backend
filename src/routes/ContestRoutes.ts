@@ -1,8 +1,9 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { IReq, IRes } from './types/express/misc';
 import ImageService from '@src/services/ImageService';
-import SessionService from '@src/services/SessionService';
 import ContestEntry from '@src/models/Contest';
+import Session from '@src/models/Session';
+import User from '@src/models/User';
 
 function getTargetImage(_req: IReq, res: IRes): IRes {
   const targetImage = ImageService.targetImage();
@@ -22,8 +23,8 @@ async function submitPrompt(
   res: IRes
 ): Promise<IRes> {
   const { sessionId, prompt } = req.body;
-  const sessionExists = await SessionService.exists(sessionId);
-  if (!sessionExists) {
+  const session = await Session.findOne({ sessionId });
+  if (!session || session.isSaved) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
       .json({ error: 'Invalid session' });
@@ -67,17 +68,22 @@ async function getSubmission(
   return res.status(HttpStatusCodes.OK).json(entry);
 }
 
-// async function getLeaderboard(_req: IReq, res: IRes): Promise<IRes> {
-//   // Select sessions with e-mail
-//   const usersWithEmail = await User.find({ email: { $exists: true } });
-//   const leaderboard = await ContestEntry.find({
-//     sessionId: usersWithEmail.map((user) => user.id),
-//   });
-//   return res.status(HttpStatusCodes.OK).json({ leaderboard });
-// }
+async function getLeaderboard(_req: IReq, res: IRes): Promise<IRes> {
+  const users = await User.find()
+    .sort({ bestScore: -1 })
+    .select({
+      name: true,
+      bestScore: true,
+      bestContestEntryIndex: true,
+      sessionId: true,
+    })
+    .limit(20);
+  return res.status(HttpStatusCodes.OK).json(users);
+}
 
 export default {
   getTargetImage,
   submitPrompt,
   getSubmission,
+  getLeaderboard,
 } as const;

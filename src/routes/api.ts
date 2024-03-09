@@ -19,7 +19,7 @@ sessionRouter.post(Paths.Session.New, SessionRoutes.createSession);
 
 sessionRouter.post(
   Paths.Session.Save,
-  validate(['sessionId', 'string', 'body'], ['email', 'string', 'body']),
+  validate(['sessionId', 'string', 'body']),
   SessionRoutes.saveSession
 );
 
@@ -31,10 +31,7 @@ contestRouter.get(
 
 // **** Contest **** //
 // Leaderboard
-contestRouter.get(
-  Paths.Contest.Leaderboard
-  // TODO
-);
+contestRouter.get(Paths.Contest.Leaderboard, ContestRoutes.getLeaderboard);
 
 // Submit
 contestRouter.post(

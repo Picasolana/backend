@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 interface IUserDocument extends Document {
-  currentSessionId: string;
+  sessionId: string;
   bestContestEntryIndex: number;
   email?: string;
   solanaAddress?: string;
@@ -10,9 +10,11 @@ interface IUserDocument extends Document {
 
 const UserSchema: Schema = new Schema(
   {
-    currentSessionId: { type: String, required: true, unique: true },
-    bestContestEntryIndex: { type: Number, required: false },
-    email: { type: String, required: true },
+    sessionId: { type: String, required: true, unique: true },
+    bestContestEntryIndex: { type: Number, required: true },
+    bestScore: { type: Number, required: true },
+    name: { type: String, required: true },
+    email: { type: String, required: false },
     solanaAddress: { type: String, required: false },
     telegramHandle: { type: String, required: false },
   },

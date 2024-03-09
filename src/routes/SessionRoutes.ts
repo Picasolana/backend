@@ -4,6 +4,7 @@ import Session from '@src/models/Session';
 import { v4 as uuidv4 } from 'uuid';
 import User from '@src/models/User';
 import ContestService from '@src/services/ContestService';
+import { generateUsername } from 'unique-username-generator';
 
 async function createSession(
   req: IReq<{ telegramHandle?: string }>,
@@ -25,31 +26,40 @@ async function createSession(
 }
 
 async function saveSession(
-  req: IReq<{ sessionId: string; email: string }>,
+  req: IReq<{ sessionId: string; email?: string; telegramHandle?: string }>,
   res: IRes
 ): Promise<IRes> {
-  const { sessionId, email } = req.body;
+  const { sessionId, email, telegramHandle } = req.body;
   const session = await Session.findOne({ id: sessionId });
   if (!session || session.isSaved) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
       .json({ error: 'Invalid session' });
   }
+  if (!telegramHandle && !email) {
+    return res
+      .status(HttpStatusCodes.BAD_REQUEST)
+      .json({ error: 'Email or telegram handle required' });
+  }
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email, telegramHandle });
   if (!user) {
-    await session.updateOne({ isSaved: true });
     const bestEntry = await ContestService.getBestEntry(sessionId);
+    const userName = generateUsername(' ', 0, 20);
     await User.create({
-      currentSessionId: sessionId,
-      bestContentEntryIndex: bestEntry.index,
+      sessionId,
+      bestContestEntryIndex: bestEntry.index,
+      bestScore: bestEntry.score,
+      name: userName,
       email,
+      telegramHandle,
     });
+    await session.updateOne({ isSaved: true });
     return res.status(HttpStatusCodes.OK).end();
   }
   return res
     .status(HttpStatusCodes.BAD_REQUEST)
-    .json({ error: 'Email already in use' });
+    .json({ error: 'Email or handle already in use' });
 }
 
 export default { createSession, saveSession };
