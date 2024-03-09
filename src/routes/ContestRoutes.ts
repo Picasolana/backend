@@ -17,7 +17,7 @@ function getTargetImage(_req: IReq, res: IRes): IRes {
 }
 
 async function submitPrompt(
-  req: IReq<{ prompt: string; sessionId: number }>,
+  req: IReq<{ prompt: string; sessionId: string }>,
   res: IRes
 ): Promise<IRes> {
   const { sessionId, prompt } = req.body;
@@ -37,16 +37,15 @@ async function submitPrompt(
 }
 
 async function getSubmission(
-  req: IReq<{ sessionId: number; index: number }>,
+  req: IReq<{ sessionId: string; index: number }>,
   res: IRes
 ): Promise<IRes> {
   const { sessionId, index } = req.params;
-  const numericSessionId = parseInt(sessionId);
   const numericIndex = parseInt(index);
 
   // TODO Optimize this query
   const entries = await ContestEntry.find({
-    sessionId: numericSessionId,
+    sessionId,
   }).sort({
     createdAt: -1,
   });

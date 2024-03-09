@@ -3,6 +3,7 @@ import jetValidator from 'jet-validator';
 
 import Paths from '../constants/Paths';
 import ContestRoutes from './ContestRoutes';
+import SessionRoutes from './SessionRoutes';
 
 // **** Variables **** //
 
@@ -14,17 +15,17 @@ const sessionRouter = Router();
 
 // **** Session **** //
 
-sessionRouter.post(Paths.Session.New);
+sessionRouter.post(Paths.Session.New, SessionRoutes.createSession);
 
 apiRouter.post(
   Paths.Session.Save,
-  validate(['sessionId', 'number', 'body'], ['email', 'string', 'body'])
+  validate(['sessionId', 'string', 'body'], ['email', 'string', 'body'])
   // TODO
 );
 
 contestRouter.get(
   Paths.Contest.Submission,
-  validate(['sessionId', 'number', 'params'], ['index', 'number', 'params']),
+  validate(['sessionId', 'string', 'params'], ['index', 'number', 'params']),
   ContestRoutes.getSubmission
 );
 
@@ -38,7 +39,7 @@ contestRouter.get(
 // Submit
 contestRouter.post(
   Paths.Contest.Submit,
-  validate(['prompt', 'string', 'body'], ['sessionId', 'number', 'body']),
+  validate(['prompt', 'string', 'body'], ['sessionId', 'string', 'body']),
   ContestRoutes.submitPrompt
 );
 

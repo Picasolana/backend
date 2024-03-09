@@ -7,7 +7,7 @@ export interface IContestEntry {
 }
 
 export interface IContestEntryDocument extends Document {
-  sessionId: number;
+  sessionId: string;
   image: string; // base64 encoded image
   prompt: string;
   score: number;
@@ -15,7 +15,7 @@ export interface IContestEntryDocument extends Document {
 
 const ContestEntrySchema: Schema = new Schema(
   {
-    sessionId: { type: Number, required: true, index: true },
+    sessionId: { type: String, required: true, index: true },
     image: { type: String, required: true },
     prompt: { type: String, required: true },
     score: { type: Number, required: true },

@@ -31,10 +31,6 @@ async function generateImage(prompt: string) {
         text: prompt,
         weight: 1,
       },
-      {
-        text: 'blurry, bad',
-        weight: -1,
-      },
     ],
   };
 
