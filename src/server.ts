@@ -20,12 +20,13 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { NodeEnvs } from '@src/constants/misc';
 import { RouteError } from '@src/other/classes';
 
+import mongoose from 'mongoose';
+
 // **** Variables **** //
 
 const app = express();
 
 // **** Setup **** //
-
 // Basic middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -63,6 +64,18 @@ app.use(
     return res.status(status).json({ error: err.message });
   }
 );
+
+mongoose
+  .connect(EnvVars.Mongo.Uri)
+  .then(() => logger.info('MongoDB connected...'))
+  .catch((err) => {
+    logger.err('MongoDB connection error', true);
+    console.error(err);
+  });
+
+mongoose.connection.on('error', (err) => {
+  logger.err('MongoDB error: ' + err, true);
+});
 
 // ** Front-End Content ** //
 

@@ -27,4 +27,7 @@ export default {
   StabilityAI: {
     apiKey: process.env.STABILITY_API_KEY ?? '',
   },
+  Mongo: {
+    Uri: process.env.MONGODB_URI ?? '',
+  },
 } as const;

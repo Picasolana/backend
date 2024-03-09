@@ -1,7 +1,6 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { IReq, IRes } from './types/express/misc';
 import ImageService from '@src/services/ImageService';
-import { IUser } from '@src/models/User';
 import ContestService from '@src/services/ContestService';
 
 function getTargetImage(_req: IReq, res: IRes): IRes {
@@ -18,17 +17,17 @@ function getTargetImage(_req: IReq, res: IRes): IRes {
 }
 
 async function submitPrompt(
-  req: IReq<{ prompt: string; user: IUser }>,
+  req: IReq<{ prompt: string; userId: number }>,
   res: IRes
 ): Promise<IRes> {
-  const isEligible = await ContestService.isEligible(req.body.user);
+  const isEligible = await ContestService.isEligible(req.body.userId);
   if (!isEligible) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
       .json({ error: 'User is not eligible' });
   }
   const entry = await ContestService.submitPrompt(
-    req.body.user,
+    req.body.userId,
     req.body.prompt
   );
   if (!entry) {

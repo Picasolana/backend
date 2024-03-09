@@ -2,8 +2,6 @@ import { Router } from 'express';
 import jetValidator from 'jet-validator';
 
 import Paths from '../constants/Paths';
-import User from '@src/models/User';
-import UserRoutes from './UserRoutes';
 import ContestRoutes from './ContestRoutes';
 
 // **** Variables **** //
@@ -11,62 +9,37 @@ import ContestRoutes from './ContestRoutes';
 const apiRouter = Router(),
   validate = jetValidator();
 
-// ** Add UserRouter ** //
+// **** Session **** //
 
-const userRouter = Router();
+apiRouter.post(Paths.Session.New);
 
-// Get all users
-userRouter.get(Paths.Users.Get, UserRoutes.getAll);
-
-// Add one user
-userRouter.post(
-  Paths.Users.Add,
-  validate(['user', User.isUser]),
-  UserRoutes.add
+apiRouter.post(
+  Paths.Session.Save,
+  validate(['sessionId', 'number', 'body'], ['email', 'string', 'body'])
+  // TODO
 );
 
-// Update one user
-userRouter.put(
-  Paths.Users.Update,
-  validate(['user', User.isUser]),
-  UserRoutes.update
-);
-
-// Delete one user
-userRouter.delete(
-  Paths.Users.Delete,
-  validate(['id', 'number', 'params']),
-  UserRoutes.delete
-);
-
-const contestRouter = Router();
-
+// **** Contest **** //
 // Leaderboard
-contestRouter.get(
+apiRouter.get(
   Paths.Contest.Leaderboard
   // TODO
 );
 
 // Submit
-contestRouter.post(
+apiRouter.post(
   Paths.Contest.Submit,
-  validate(['prompt', 'string', 'body'], ['user', User.isUser, 'body']),
+  validate(['prompt', 'string', 'body'], ['sessionId', 'number', 'body']),
   ContestRoutes.submitPrompt
 );
 
 // Image
-contestRouter.get(Paths.Contest.Image, ContestRoutes.getImage);
+apiRouter.get(Paths.Contest.Target, ContestRoutes.getImage);
 
 // Mint
-contestRouter.post(
+apiRouter.post(
   Paths.Contest.Mint
   // TODO
 );
-
-// Add UserRouter
-apiRouter.use(Paths.Users.Base, userRouter);
-apiRouter.use(Paths.Contest.Base, contestRouter);
-
-// **** Export default **** //
 
 export default apiRouter;

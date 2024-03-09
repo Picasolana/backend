@@ -4,18 +4,16 @@
 
 export default {
   Base: '/api',
-  Users: {
-    Base: '/users',
-    Get: '/all',
-    Add: '/add',
-    Update: '/update',
-    Delete: '/delete/:id',
+  Session: {
+    Base: '/session',
+    New: '/new',
+    Save: '/save',
   },
   Contest: {
     Base: '/contest',
     Leaderboard: '/leaderboard',
     Submit: '/submit',
-    Image: '/image',
+    Target: '/target',
     Mint: '/mint',
   },
 } as const;
