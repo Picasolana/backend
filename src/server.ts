@@ -19,6 +19,7 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 
 import { NodeEnvs } from '@src/constants/misc';
 import { RouteError } from '@src/other/classes';
+import cors from 'cors';
 
 import mongoose from 'mongoose';
 
@@ -28,6 +29,7 @@ const app = express();
 
 // **** Setup **** //
 // Basic middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(EnvVars.CookieProps.Secret));
