@@ -13,6 +13,8 @@ const apiRouter = Router(),
 
 apiRouter.post(Paths.Session.New);
 
+apiRouter.post(Paths.Session.Save);
+
 apiRouter.post(
   Paths.Session.Save,
   validate(['sessionId', 'number', 'body'], ['email', 'string', 'body'])
@@ -34,7 +36,7 @@ apiRouter.post(
 );
 
 // Image
-apiRouter.get(Paths.Contest.Target, ContestRoutes.getImage);
+apiRouter.get(Paths.Contest.Target, ContestRoutes.getTargetImage);
 
 // Mint
 apiRouter.post(
