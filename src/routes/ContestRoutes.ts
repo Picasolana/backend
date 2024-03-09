@@ -2,7 +2,6 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { IReq, IRes } from './types/express/misc';
 import ImageService from '@src/services/ImageService';
 import ContestEntry from '@src/models/Contest';
-import User from '@src/models/User';
 
 function getTargetImage(_req: IReq, res: IRes): IRes {
   const targetImage = ImageService.targetImage();
@@ -34,7 +33,31 @@ async function submitPrompt(
 
   await ContestEntry.create({ sessionId, prompt, image, score });
 
-  return res.status(HttpStatusCodes.OK).json({ image, score });
+  return res.status(HttpStatusCodes.OK).json({ score });
+}
+
+async function getSubmission(
+  req: IReq<{ sessionId: number; index: number }>,
+  res: IRes
+): Promise<IRes> {
+  const { sessionId, index } = req.params;
+  const numericSessionId = parseInt(sessionId);
+  const numericIndex = parseInt(index);
+
+  // TODO Optimize this query
+  const entries = await ContestEntry.find({
+    sessionId: numericSessionId,
+  }).sort({
+    createdAt: -1,
+  });
+
+  if (entries.length == 0 || entries.length <= numericIndex) {
+    return res
+      .status(HttpStatusCodes.NOT_FOUND)
+      .json({ error: 'Invalid index' });
+  }
+
+  return res.status(HttpStatusCodes.OK).json(entries[numericIndex]);
 }
 
 // async function getLeaderboard(_req: IReq, res: IRes): Promise<IRes> {
@@ -49,4 +72,5 @@ async function submitPrompt(
 export default {
   getTargetImage,
   submitPrompt,
+  getSubmission,
 } as const;

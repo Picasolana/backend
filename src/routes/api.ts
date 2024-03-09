@@ -9,11 +9,12 @@ import ContestRoutes from './ContestRoutes';
 const apiRouter = Router(),
   validate = jetValidator();
 
+const contestRouter = Router();
+const sessionRouter = Router();
+
 // **** Session **** //
 
-apiRouter.post(Paths.Session.New);
-
-apiRouter.post(Paths.Session.Save);
+sessionRouter.post(Paths.Session.New);
 
 apiRouter.post(
   Paths.Session.Save,
@@ -21,27 +22,36 @@ apiRouter.post(
   // TODO
 );
 
+contestRouter.get(
+  Paths.Contest.Submission,
+  validate(['sessionId', 'number', 'params'], ['index', 'number', 'params']),
+  ContestRoutes.getSubmission
+);
+
 // **** Contest **** //
 // Leaderboard
-apiRouter.get(
+contestRouter.get(
   Paths.Contest.Leaderboard
   // TODO
 );
 
 // Submit
-apiRouter.post(
+contestRouter.post(
   Paths.Contest.Submit,
   validate(['prompt', 'string', 'body'], ['sessionId', 'number', 'body']),
   ContestRoutes.submitPrompt
 );
 
 // Image
-apiRouter.get(Paths.Contest.Target, ContestRoutes.getTargetImage);
+contestRouter.get(Paths.Contest.Target, ContestRoutes.getTargetImage);
 
 // Mint
-apiRouter.post(
+contestRouter.post(
   Paths.Contest.Mint
   // TODO
 );
+
+apiRouter.use(Paths.Contest.Base, contestRouter);
+apiRouter.use(Paths.Session.Base, sessionRouter);
 
 export default apiRouter;

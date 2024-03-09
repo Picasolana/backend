@@ -11,6 +11,7 @@ export default {
   },
   Contest: {
     Base: '/contest',
+    Submission: '/submission/:sessionId/:index',
     Leaderboard: '/leaderboard',
     Submit: '/submit',
     Target: '/target',
