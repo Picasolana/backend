@@ -145,9 +145,9 @@ def imageComparisonSSIMLocal(userImage, objectiveImage):
     print("Structural Similarity:", ss)
     return ss
 
-def imageComparisonSSIM(userImage, objectiveImage):
-    img1 = base64.b64decode(userImage)
-    img2 = base64.b64decode(objectiveImage)
+def imageComparisonSSIM(targetImage, userImage):
+    img1 = base64.b64decode(targetImage)
+    img2 = base64.b64decode(userImage)
     npimg1 = np.frombuffer(img1, dtype=np.uint8)
     npimg2 = np.frombuffer(img2, dtype=np.uint8)
     img1 = cv.imdecode(npimg1, 1)          # queryImage
@@ -165,12 +165,12 @@ def imageComparisonPrompt():
     ## compare keywords using sentiment analysis or bag of words
     return
 
-def getScore(userImage, objectiveImage):
+def getScore(targetImage, userImage):
     score = 0
     FUNCTIONS = [imageComparisonSSIM, imageComparisonSIFT]
 
     for i, func in enumerate(FUNCTIONS):
-        score += func(userImage, objectiveImage)*WEIGHTS[i]
+        score += func(targetImage=targetImage, userImage=userImage)*WEIGHTS[i]
 
     return score
 

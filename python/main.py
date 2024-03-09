@@ -7,18 +7,18 @@ import json
 app = FastAPI()
 
 class Score(BaseModel):
-    objectiveImage: str
+    targetImage: str
     userImage: str 
 
 @app.post("/getScore/")
 async def generateScore(score: Score):
     print("getting score")
     userImage = score.userImage
-    objectiveImage = score.objectiveImage
+    targetImage = score.targetImage
     return json.dumps({
         "status": 200,
         "error": None,
-        "score": getScore(userImage, objectiveImage),
+        "score": getScore(targetImage=targetImage, userImage=userImage),
         "msg": None
     })
 
