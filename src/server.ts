@@ -20,8 +20,10 @@ import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { NodeEnvs } from '@src/constants/misc';
 import { RouteError } from '@src/other/classes';
 import cors from 'cors';
+import { schedule as cronSchedule } from 'node-cron';
 
 import mongoose from 'mongoose';
+import SessionService from './services/SessionService';
 
 // **** Variables **** //
 
@@ -33,6 +35,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(EnvVars.CookieProps.Secret));
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-call
+cronSchedule('*/60 * * * *', SessionService.deleteOldSessions);
 
 // Show routes called in console during development
 if (EnvVars.NodeEnv === NodeEnvs.Dev.valueOf()) {
