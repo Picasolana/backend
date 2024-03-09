@@ -35,13 +35,33 @@ sessionRouter.post(
   SessionRoutes.saveSession
 );
 
+sessionRouter.get(
+  Paths.Session.Telegram,
+  validate(['telegramHandle', 'string', 'params']),
+  SessionRoutes.getSessionIdFromTelegram
+);
+
+sessionRouter.get(
+  Paths.Session.Email,
+  validate(['email', 'string', 'params']),
+  SessionRoutes.getSessionIdFromEmail
+);
+
+// **** Contest **** //
+contestRouter.get(Paths.Contest.Target, ContestRoutes.getTargetImage);
+
+contestRouter.get(
+  Paths.Contest.Best,
+  validate(['sessionId', 'string', 'params']),
+  ContestRoutes.getBestContestEntry
+);
+
 contestRouter.get(
   Paths.Contest.Submission,
   validate(['sessionId', 'string', 'params'], ['index', 'number', 'params']),
   ContestRoutes.getSubmission
 );
 
-// **** Contest **** //
 // Leaderboard
 contestRouter.get(Paths.Contest.Leaderboard, ContestRoutes.getLeaderboard);
 
@@ -51,9 +71,6 @@ contestRouter.post(
   validate(['prompt', 'string', 'body'], ['sessionId', 'string', 'body']),
   ContestRoutes.submitPrompt
 );
-
-// Image
-contestRouter.get(Paths.Contest.Target, ContestRoutes.getTargetImage);
 
 // Mint
 contestRouter.post(

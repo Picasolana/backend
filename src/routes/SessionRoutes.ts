@@ -62,4 +62,41 @@ async function saveSession(
     .json({ error: 'Email or handle already in use' });
 }
 
-export default { createSession, saveSession };
+async function getSessionIdFromTelegram(
+  req: IReq<{ telegramHandle: string }>,
+  res: IRes
+): Promise<IRes> {
+  const { telegramHandle } = req.params;
+  const user = await User.findOne({ telegramHandle });
+  if (!user) {
+    return res
+      .status(HttpStatusCodes.NOT_FOUND)
+      .json({ error: 'User not found' });
+  }
+  return res
+    .status(HttpStatusCodes.OK)
+    .json({ sessionId: user.sessionId, userName: user.name });
+}
+
+async function getSessionIdFromEmail(
+  req: IReq<{ email: string }>,
+  res: IRes
+): Promise<IRes> {
+  const { email } = req.params;
+  const user = await User.findOne({ email });
+  if (!user) {
+    return res
+      .status(HttpStatusCodes.NOT_FOUND)
+      .json({ error: 'User not found' });
+  }
+  return res
+    .status(HttpStatusCodes.OK)
+    .json({ sessionId: user.sessionId, userName: user.name });
+}
+
+export default {
+  createSession,
+  saveSession,
+  getSessionIdFromTelegram,
+  getSessionIdFromEmail,
+};

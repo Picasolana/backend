@@ -3,6 +3,8 @@ import mongoose, { Document, Schema } from 'mongoose';
 interface IUserDocument extends Document {
   sessionId: string;
   bestContestEntryIndex: number;
+  bestScore: number;
+  name: string;
   email?: string;
   solanaAddress?: string;
   telegramHandle?: string;
