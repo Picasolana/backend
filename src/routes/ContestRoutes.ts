@@ -1,6 +1,7 @@
 import HttpStatusCodes from '@src/constants/HttpStatusCodes';
 import { IReq, IRes } from './types/express/misc';
 import ImageService from '@src/services/ImageService';
+import SessionService from '@src/services/SessionService';
 import ContestEntry from '@src/models/Contest';
 
 function getTargetImage(_req: IReq, res: IRes): IRes {
@@ -21,11 +22,18 @@ async function submitPrompt(
   res: IRes
 ): Promise<IRes> {
   const { sessionId, prompt } = req.body;
+  const sessionExists = await SessionService.exists(sessionId);
+  if (!sessionExists) {
+    return res
+      .status(HttpStatusCodes.BAD_REQUEST)
+      .json({ error: 'Invalid session' });
+  }
+
   const isEligible = (await ContestEntry.countDocuments({ sessionId })) < 5;
   if (!isEligible) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
-      .json({ error: 'User is not eligible' });
+      .json({ error: 'Too many tries' });
   }
   const image = await ImageService.generateImage(prompt);
   const targetImage = ImageService.targetImage();
@@ -51,9 +59,7 @@ async function getSubmission(
   });
 
   if (entries.length == 0 || entries.length <= numericIndex) {
-    return res
-      .status(HttpStatusCodes.NOT_FOUND)
-      .json({ error: 'Invalid index' });
+    return res.status(HttpStatusCodes.NOT_FOUND).json({ error: 'Not Found' });
   }
 
   return res.status(HttpStatusCodes.OK).json(entries[numericIndex]);

@@ -17,7 +17,7 @@ const sessionRouter = Router();
 
 sessionRouter.post(Paths.Session.New, SessionRoutes.createSession);
 
-apiRouter.post(
+sessionRouter.post(
   Paths.Session.Save,
   validate(['sessionId', 'string', 'body'], ['email', 'string', 'body']),
   SessionRoutes.saveSession

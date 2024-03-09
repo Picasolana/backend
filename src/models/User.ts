@@ -14,6 +14,7 @@ const UserSchema: Schema = new Schema(
     email: { type: String, required: true },
     solanaAddress: { type: String, required: false },
     telegramHandle: { type: String, required: false },
+    bestContestEntryId: { type: String, required: false },
   },
   { timestamps: true }
 );
