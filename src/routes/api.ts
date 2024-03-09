@@ -49,13 +49,13 @@ contestRouter.get(
 
 // Submit
 contestRouter.post(
-  Paths.Contest.Submit
-  // TODO
+  Paths.Contest.Submit,
+  validate(['prompt', 'string', 'body']),
+  ContestRoutes.submitPrompt
 );
 
 // Image
-// eslint-disable-next-line
-contestRouter.get(Paths.Contest.Image, ContestRoutes.getImage as any);
+contestRouter.get(Paths.Contest.Image, ContestRoutes.getImage);
 
 // Mint
 contestRouter.post(
