@@ -4,6 +4,7 @@ import jetValidator from 'jet-validator';
 import Paths from '../constants/Paths';
 import ContestRoutes from './ContestRoutes';
 import SessionRoutes from './SessionRoutes';
+import rateLimit from 'express-rate-limit';
 
 // **** Variables **** //
 
@@ -14,12 +15,23 @@ const contestRouter = Router();
 const sessionRouter = Router();
 
 // **** Session **** //
+const sessionRateLimit = rateLimit({
+  windowMs: 1 * 60 * 1000,
+  max: 3,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+});
 
-sessionRouter.post(Paths.Session.New, SessionRoutes.createSession);
+sessionRouter.post(
+  Paths.Session.New,
+  sessionRateLimit,
+  SessionRoutes.createSession
+);
 
 sessionRouter.post(
   Paths.Session.Save,
-  validate(['sessionId', 'string', 'body']),
+  validate(['sessionId', 'string', 'body']), // + telegramHandle or email
   SessionRoutes.saveSession
 );
 
