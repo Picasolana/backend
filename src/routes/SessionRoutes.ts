@@ -3,6 +3,7 @@ import { IReq, IRes } from './types/express/misc';
 import Session from '@src/models/Session';
 import { v4 as uuidv4 } from 'uuid';
 import User from '@src/models/User';
+import ContestService from '@src/services/ContestService';
 
 async function createSession(
   req: IReq<{ telegramHandle?: string }>,
@@ -37,15 +38,18 @@ async function saveSession(
 
   const user = await User.findOne({ email });
   if (!user) {
-    await User.create({ currentSessionId: sessionId, email });
-  } else {
-    return res
-      .status(HttpStatusCodes.BAD_REQUEST)
-      .json({ error: 'Email already in use' });
+    await session.updateOne({ isSaved: true });
+    const bestEntry = await ContestService.getBestEntry(sessionId);
+    await User.create({
+      currentSessionId: sessionId,
+      bestContentEntryIndex: bestEntry.index,
+      email,
+    });
+    return res.status(HttpStatusCodes.OK).end();
   }
-
-  await session.updateOne({ isSaved: true });
-  return res.status(HttpStatusCodes.OK).end();
+  return res
+    .status(HttpStatusCodes.BAD_REQUEST)
+    .json({ error: 'Email already in use' });
 }
 
 export default { createSession, saveSession };

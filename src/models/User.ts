@@ -1,20 +1,20 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
 interface IUserDocument extends Document {
-  id: number;
   currentSessionId: string;
-  email?: string; // Optional email address
-  solanaAddress?: string; // Optional Solana blockchain address
-  telegramHandle?: string; // Optional Telegram handle
+  bestContestEntryIndex: number;
+  email?: string;
+  solanaAddress?: string;
+  telegramHandle?: string;
 }
 
 const UserSchema: Schema = new Schema(
   {
     currentSessionId: { type: String, required: true, unique: true },
+    bestContestEntryIndex: { type: Number, required: false },
     email: { type: String, required: true },
     solanaAddress: { type: String, required: false },
     telegramHandle: { type: String, required: false },
-    bestContestEntryId: { type: String, required: false },
   },
   { timestamps: true }
 );

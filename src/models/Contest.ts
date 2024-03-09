@@ -1,12 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export interface IContestEntry {
-  image: string; // base64 encoded image
-  prompt: string;
-  score: number;
-}
-
 export interface IContestEntryDocument extends Document {
+  index: number;
   sessionId: string;
   image: string; // base64 encoded image
   prompt: string;
@@ -15,6 +10,7 @@ export interface IContestEntryDocument extends Document {
 
 const ContestEntrySchema: Schema = new Schema(
   {
+    index: { type: Number, required: true, index: true },
     sessionId: { type: String, required: true, index: true },
     image: { type: String, required: true },
     prompt: { type: String, required: true },

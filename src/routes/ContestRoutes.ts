@@ -29,8 +29,8 @@ async function submitPrompt(
       .json({ error: 'Invalid session' });
   }
 
-  const isEligible = (await ContestEntry.countDocuments({ sessionId })) < 5;
-  if (!isEligible) {
+  const entries = await ContestEntry.countDocuments({ sessionId });
+  if (entries > 4) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
       .json({ error: 'Too many tries' });
@@ -39,9 +39,15 @@ async function submitPrompt(
   const targetImage = ImageService.targetImage();
   const score = ImageService.scoreImage(image, targetImage);
 
-  await ContestEntry.create({ sessionId, prompt, image, score });
+  await ContestEntry.create({
+    index: entries,
+    sessionId,
+    prompt,
+    image,
+    score,
+  });
 
-  return res.status(HttpStatusCodes.OK).json({ score });
+  return res.status(HttpStatusCodes.OK).json({ image, index: entries, score });
 }
 
 async function getSubmission(
@@ -51,18 +57,14 @@ async function getSubmission(
   const { sessionId, index } = req.params;
   const numericIndex = parseInt(index);
 
-  // TODO Optimize this query
-  const entries = await ContestEntry.find({
+  const entry = await ContestEntry.findOne({
     sessionId,
-  }).sort({
-    createdAt: -1,
+    index: numericIndex,
   });
-
-  if (entries.length == 0 || entries.length <= numericIndex) {
+  if (!entry) {
     return res.status(HttpStatusCodes.NOT_FOUND).json({ error: 'Not Found' });
   }
-
-  return res.status(HttpStatusCodes.OK).json(entries[numericIndex]);
+  return res.status(HttpStatusCodes.OK).json(entry);
 }
 
 // async function getLeaderboard(_req: IReq, res: IRes): Promise<IRes> {
