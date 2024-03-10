@@ -1,7 +1,6 @@
 import env from '@src/constants/EnvVars';
 import path from 'path';
 import fs from 'fs';
-import { randomInt } from 'crypto';
 
 /**
  * Generate image off of prompt
@@ -55,9 +54,34 @@ function targetImage() {
   return fs.readFileSync(imagePath).toString('base64');
 }
 
-function scoreImage(userImage: string, targetImage: string): number {
-  // TODO implement actual comparing logic
-  return randomInt(0, 100);
+async function scoreImage(userImage: string, targetImage: string) {
+  const response = await fetch('http://127.0.0.1:8000/getScore', {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST',
+    body: JSON.stringify({
+      userImage,
+      targetImage,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Non-200 response: ${await response.text()}`);
+  }
+  const responseJSON = (await response.json()) as unknown;
+
+  if (
+    responseJSON &&
+    typeof responseJSON === 'object' &&
+    'score' in responseJSON &&
+    typeof responseJSON.score === 'number' &&
+    'status' in responseJSON
+  ) {
+    return responseJSON.score;
+  }
+
+  throw new Error('No response');
 }
 
 // **** Export default **** //

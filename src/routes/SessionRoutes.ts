@@ -26,20 +26,25 @@ async function createSession(
 }
 
 async function saveSession(
-  req: IReq<{ sessionId: string; email?: string; telegramHandle?: string }>,
+  req: IReq<{
+    sessionId: string;
+    email?: string;
+    telegramHandle?: string;
+    solanaAddress?: string;
+  }>,
   res: IRes
 ): Promise<IRes> {
-  const { sessionId, email, telegramHandle } = req.body;
+  const { sessionId, email, telegramHandle, solanaAddress } = req.body;
   const session = await Session.findOne({ id: sessionId });
   if (!session || session.isSaved) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
       .json({ error: 'Invalid session' });
   }
-  if (!telegramHandle && !email) {
+  if (!telegramHandle && !email && !solanaAddress) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
-      .json({ error: 'Email or telegram handle required' });
+      .json({ error: 'Email, telegram or solana address required' });
   }
 
   const user = await User.findOne({ email, telegramHandle });
@@ -53,6 +58,7 @@ async function saveSession(
       name: userName,
       email,
       telegramHandle,
+      solanaAddress,
     });
     await session.updateOne({ isSaved: true });
     return res.status(HttpStatusCodes.OK).end();

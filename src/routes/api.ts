@@ -31,7 +31,8 @@ sessionRouter.post(
 
 sessionRouter.post(
   Paths.Session.Save,
-  validate(['sessionId', 'string', 'body']), // + telegramHandle or email
+  validate(['sessionId', 'string', 'body']),
+  // telegramHandle or email or solana address
   SessionRoutes.saveSession
 );
 

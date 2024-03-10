@@ -39,7 +39,7 @@ async function submitPrompt(
   }
   const image = await ImageService.generateImage(prompt);
   const targetImage = ImageService.targetImage();
-  const score = ImageService.scoreImage(image, targetImage);
+  const score = await ImageService.scoreImage(image, targetImage);
 
   await ContestEntry.create({
     index: entries,

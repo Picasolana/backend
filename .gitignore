@@ -7,3 +7,5 @@ Scripts
 share
 pyvenv.cfg
 Include
+__pycache__
+python/bin
