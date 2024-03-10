@@ -17,10 +17,12 @@ async def generateScore(score: Score):
     userImage = score.userImage
     targetImage = score.targetImage
     maxSimilarFeatures: score.maxSimilarFeatures
-    return json.dumps({
+    return {
         "status": 200,
         "error": None,
-        "score": getScore(targetImage=targetImage, userImage=userImage),
+        "score": getScore(
+            targetImage=targetImage, userImage=userImage, maxSimilarFeatures=maxSimilarFeatures
+        ),
         "msg": None
-    })
+    }
 

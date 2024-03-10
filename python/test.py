@@ -8,20 +8,20 @@ URL = "http://localhost:8000/getScore/"
 PROMPT = "circle next to a sqaure"
 CWD = Path.cwd()
 IMAGE_DIR = CWD / "images"
-objImg = imageGeneratoroffPrompt(PROMPT)
-usrImg = imageGeneratoroffPrompt(PROMPT)
-# image1 = "txt2img_308028419.txt"
-# image2 = "txt2img_308028419.txt"
+# objImg = imageGeneratoroffPrompt(PROMPT)
+# usrImg = imageGeneratoroffPrompt(PROMPT)
+image1 = "txt2img_circle next to a sqaure_1883391401.png"
+image2 = "txt2img_circle next to a sqaure_1773196312.png"
 
-# with open(IMAGE_DIR / image1, 'rb') as f:
-#     objImg = base64.b64encode(f.read())
+with open(IMAGE_DIR / image1, 'rb') as f:
+    objImg = base64.b64encode(f.read())
 
-# with open(IMAGE_DIR / image1, 'rb') as f:
-#     usrImg = base64.b64encode(f.read())
+with open(IMAGE_DIR / image1, 'rb') as f:
+    usrImg = base64.b64encode(f.read())
 
 images = {
-  "objectiveImage": objImg,
-  "userImage": usrImg,
+  "targetImage": objImg.decode('utf-8'),
+  "userImage": usrImg.decode('utf-8'),
 }
 
 # with open('testjson.json', 'r') as j:

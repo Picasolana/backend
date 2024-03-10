@@ -105,7 +105,8 @@ def imageComparisonSIFTLocal(userImage, objectiveImage):
     #plt.imshow(img3),plt.show()
     return len(good)
 
-def imageComparisonSIFT(targetImage, userImage):
+def imageComparisonSIFT(targetImage, userImage, maxSimilarFeatures=None):
+    """Both the target and user images are base64 encoded strings"""
     img1 = base64.b64decode(targetImage)
     img2 = base64.b64decode(userImage)
     npimg1 = np.frombuffer(img1, dtype=np.uint8)
@@ -132,9 +133,14 @@ def imageComparisonSIFT(targetImage, userImage):
     
     # # Sort them in the order of their distance.
     good = sorted(good, key = lambda x:x.distance)
+    sum_dist_features = sum([x.distance for x in good[:10]])/10    
     print("Best 10 distances", [x.distance for x in good[:10]])
     print("Number of matches:", len(good))
-    return len(good)
+    print("Average distance of first 10 features:", sum_dist_features)
+    if maxSimilarFeatures:
+        return len(good)/maxSimilarFeatures
+    else:
+        return 1
 
 def imageComparisonSSIMLocal(userImage, objectiveImage):
     img1 = cv.imread(str(userImage),cv.IMREAD_GRAYSCALE)          # queryImage
@@ -145,7 +151,8 @@ def imageComparisonSSIMLocal(userImage, objectiveImage):
     print("Structural Similarity:", ss)
     return ss
 
-def imageComparisonSSIM(targetImage, userImage):
+def imageComparisonSSIM(targetImage, userImage, **kwargs):
+    """Both the target and user images are base64 encoded strings"""
     img1 = base64.b64decode(targetImage)
     img2 = base64.b64decode(userImage)
     npimg1 = np.frombuffer(img1, dtype=np.uint8)
@@ -165,29 +172,42 @@ def imageComparisonPrompt():
     ## compare keywords using sentiment analysis or bag of words
     return
 
-def getScore(targetImage, userImage):
+def getScore(targetImage, userImage, maxSimilarFeatures=None):
     score = 0
     FUNCTIONS = [imageComparisonSSIM, imageComparisonSIFT]
 
     for i, func in enumerate(FUNCTIONS):
-        score += func(targetImage=targetImage, userImage=userImage)*WEIGHTS[i]
+        int_score = func(
+            targetImage=targetImage, 
+            userImage=userImage, 
+            maxSimilarFeatures=maxSimilarFeatures
+        )*WEIGHTS[i]
+        print(int_score)
+        score += int_score
 
     return score
 
 if __name__ == "__main__":
-    # images= {
-    #     'objectiveImage' :Path('images\empire_state1.jpg'),
-    #     'userImage' :Path('images\empire_state2.jpg'),
-    #     'empireState3' :Path('images\empire_state3.jpg'),
-    #     'dog' :Path('images\dog.jpg'),
-    #     'skyline' :Path('images\Dubai_Marina_Skyline.jpg'),
-    # }
-    with open('testjson.json', 'r') as j:
-        images = dict(json.loads(j.read()))
+    images= {
+        'objectiveImage' :Path('txt2img_circle next to a sqaure_247168195.png'),
+        '2' :Path('txt2img_circle next to a sqaure_1773196312.png'),
+        '3' :Path('txt2img_circle next to a sqaure_1883391401.png'),
+        '4' :Path('txt2img_circle next to a sqaure_4119905347.png'),
+        '5' :Path('txt2img_circle next to a sqaure_4267077306.png'),
+    }
+    # with open('testjson.json', 'r') as j:
+    #     images = dict(json.loads(j.read()))
     
     # imageComparisonSIFT(userImage, skyline)
     # imageComparisonSSIM(userImage, skyline)
     print(images.keys())
     for i,j in enumerate(images):
         print("Comparison of objectImage and ", j)
-        print(getScore(images["objectiveImage"], images[j]))
+        with open(IMAGE_DIR / images["objectiveImage"], 'rb') as f:
+            objImg = base64.b64encode(f.read())
+
+        with open(IMAGE_DIR / images[j], 'rb') as f:
+            usrImg = base64.b64encode(f.read())
+        print("Similarity score: ", getScore(objImg, usrImg))
+        print('-------------------------')
+        print()
