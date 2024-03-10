@@ -4,6 +4,7 @@ import ImageService from '@src/services/ImageService';
 import ContestEntry from '@src/models/Contest';
 import Session from '@src/models/Session';
 import User from '@src/models/User';
+import ContestService from '@src/services/ContestService';
 
 function getTargetImage(_req: IReq, res: IRes): IRes {
   const targetImage = ImageService.targetImage();
@@ -23,7 +24,7 @@ async function submitPrompt(
   res: IRes
 ): Promise<IRes> {
   const { sessionId, prompt } = req.body;
-  const session = await Session.findOne({ sessionId });
+  const session = await Session.findOne({ id: sessionId });
   if (!session || session.isSaved) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
@@ -81,9 +82,22 @@ async function getLeaderboard(_req: IReq, res: IRes): Promise<IRes> {
   return res.status(HttpStatusCodes.OK).json(users);
 }
 
+async function getBestContestEntry(
+  req: IReq<{ sessionId: string }>,
+  res: IRes
+): Promise<IRes> {
+  const { sessionId } = req.params;
+  const bestEntry = await ContestService.getBestEntry(sessionId);
+  if (!bestEntry) {
+    return res.status(HttpStatusCodes.NOT_FOUND).json({ error: 'Not Found' });
+  }
+  return res.status(HttpStatusCodes.OK).json(bestEntry);
+}
+
 export default {
   getTargetImage,
   submitPrompt,
   getSubmission,
   getLeaderboard,
+  getBestContestEntry,
 } as const;
