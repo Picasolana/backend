@@ -9,12 +9,14 @@ app = FastAPI()
 class Score(BaseModel):
     targetImage: str
     userImage: str 
+    maxSimilarFeatures: int
 
 @app.post("/getScore/")
 async def generateScore(score: Score):
     print("getting score")
     userImage = score.userImage
     targetImage = score.targetImage
+    maxSimilarFeatures: score.maxSimilarFeatures
     return json.dumps({
         "status": 200,
         "error": None,
