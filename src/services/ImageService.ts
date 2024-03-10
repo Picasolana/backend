@@ -72,7 +72,7 @@ async function scoreImage(
   targetImage: string,
   maxSimilarFeatures?: number
 ) {
-  const response = await fetch('http://127.0.0.1:8000/getScore', {
+  const response = await fetch('http://40.113.162.230:8000/getScore', {
     headers: {
       'Content-Type': 'application/json',
     },
