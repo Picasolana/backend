@@ -42,8 +42,22 @@ Run production build with a different env file.
 
 ## Start Python Image Similarity Service
 
-// TODO create env...
+In the root folder of the repo create a virtual environment
 
+```bash
+python -m venv python
+cd python
+source bin/activate
 ```
+
+Install dependencies
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+Run the server
+
+```bash
 bin/python -m uvicorn main:app --reload
 ```
