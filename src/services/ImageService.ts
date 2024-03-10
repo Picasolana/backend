@@ -18,7 +18,7 @@ async function generateImage(prompt: string) {
     steps: 40,
     width: 512,
     height: 512,
-    seed: 1337,
+    seed: 0,
     cfg_scale: 35,
     samples: 1,
     text_prompts: [
