@@ -13,16 +13,29 @@ class Score(BaseModel):
 
 @app.post("/getScore/")
 async def generateScore(score: Score):
-    print("getting score")
-    userImage = score.userImage
-    targetImage = score.targetImage
-    maxSimilarFeatures: score.maxSimilarFeatures
-    return {
-        "status": 200,
-        "error": None,
-        "score": getScore(
+    try:
+        print("getting score")
+        userImage = score.userImage
+        targetImage = score.targetImage
+        maxSimilarFeatures = score.maxSimilarFeatures
+        if maxSimilarFeatures <= 0:
+            maxSimilarFeatures = None
+        score, return_maxFeatures = getScore(
             targetImage=targetImage, userImage=userImage, maxSimilarFeatures=maxSimilarFeatures
-        ),
-        "msg": None
-    }
+        )
+        return {
+            "status": 200,
+            "error": None,
+            "score": score,
+            "maxSimilarFeatures": return_maxFeatures,
+            "msg": None
+        }
+    except Exception as e:
+        return {
+            "status": 404,
+            "error": str(e),
+            "score": None,
+            "maxSimilarFeatures": None,
+            "msg": "An error occurred"
+        }
 

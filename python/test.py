@@ -16,12 +16,13 @@ image2 = "txt2img_circle next to a sqaure_1773196312.png"
 with open(IMAGE_DIR / image1, 'rb') as f:
     objImg = base64.b64encode(f.read())
 
-with open(IMAGE_DIR / image1, 'rb') as f:
+with open(IMAGE_DIR / image2, 'rb') as f:
     usrImg = base64.b64encode(f.read())
 
 images = {
   "targetImage": objImg.decode('utf-8'),
   "userImage": usrImg.decode('utf-8'),
+  "maxSimilarFeatures": 100
 }
 
 # with open('testjson.json', 'r') as j:

@@ -138,9 +138,9 @@ def imageComparisonSIFT(targetImage, userImage, maxSimilarFeatures=None):
     print("Number of matches:", len(good))
     print("Average distance of first 10 features:", sum_dist_features)
     if maxSimilarFeatures:
-        return len(good)/maxSimilarFeatures
+        return len(good)/maxSimilarFeatures, maxSimilarFeatures
     else:
-        return 1
+        return 1, maxSimilarFeatures
 
 def imageComparisonSSIMLocal(userImage, objectiveImage):
     img1 = cv.imread(str(userImage),cv.IMREAD_GRAYSCALE)          # queryImage
@@ -181,11 +181,16 @@ def getScore(targetImage, userImage, maxSimilarFeatures=None):
             targetImage=targetImage, 
             userImage=userImage, 
             maxSimilarFeatures=maxSimilarFeatures
-        )*WEIGHTS[i]
+        )
         print(int_score)
-        score += int_score
+        
+        if isinstance(int_score, tuple):
+            maxSimilarFeatures = int_score[1]
+            score += int_score[0]*WEIGHTS[i]
+        else:
+            score += int_score*WEIGHTS[i]
 
-    return score
+    return score, maxSimilarFeatures
 
 if __name__ == "__main__":
     images= {
@@ -208,6 +213,6 @@ if __name__ == "__main__":
 
         with open(IMAGE_DIR / images[j], 'rb') as f:
             usrImg = base64.b64encode(f.read())
-        print("Similarity score: ", getScore(objImg, usrImg))
+        print("Similarity score: ", getScore(objImg, usrImg, 100))
         print('-------------------------')
         print()
