@@ -8,7 +8,7 @@ async function exists(sessionId: string): Promise<boolean> {
 async function deleteOldSessions() {
   const oldSessions = await Session.find({
     isSaved: false,
-    createdAt: { $lt: new Date(Date.now() - 1000 * 60 * 60 * 1) },
+    createdAt: { $lt: new Date(Date.now() - 1000 * 60 * 60 * 1) }, // 1 hour
   }).select({ sessionId: true });
 
   const sessionIds = oldSessions.map((s) => s.sessionId);

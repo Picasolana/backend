@@ -54,7 +54,9 @@ async function submitPrompt(
     score: score.score,
   });
 
-  return res.status(HttpStatusCodes.OK).json({ image, index: entries, score });
+  return res
+    .status(HttpStatusCodes.OK)
+    .json({ image, index: entries, score: score.score });
 }
 
 async function getSubmission(

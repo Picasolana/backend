@@ -137,8 +137,10 @@ def imageComparisonSIFT(targetImage, userImage, maxSimilarFeatures=None):
     print("Best 10 distances", [x.distance for x in good[:10]])
     print("Number of matches:", len(good))
     print("Average distance of first 10 features:", sum_dist_features)
+    margin_coeff = 20
     if maxSimilarFeatures:
-        return len(good)/maxSimilarFeatures, maxSimilarFeatures
+        len_good = margin_coeff * len(good) if (margin_coeff * len(good)) < maxSimilarFeatures else maxSimilarFeatures
+        return len_good/maxSimilarFeatures, maxSimilarFeatures
     else:
         return 1, len(good)
 
