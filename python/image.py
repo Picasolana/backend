@@ -138,9 +138,9 @@ def imageComparisonSIFT(targetImage, userImage, maxSimilarFeatures=None):
     print("Number of matches:", len(good))
     print("Average distance of first 10 features:", sum_dist_features)
     if maxSimilarFeatures:
-        return len(good)/maxSimilarFeatures, maxSimilarFeatures
+        return len(good)/maxSimilarFeatures, None
     else:
-        return 1, maxSimilarFeatures
+        return 1, len(good)
 
 def imageComparisonSSIMLocal(userImage, objectiveImage):
     img1 = cv.imread(str(userImage),cv.IMREAD_GRAYSCALE)          # queryImage
