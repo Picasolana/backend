@@ -39,14 +39,19 @@ async function submitPrompt(
   }
   const image = await ImageService.generateImage(prompt);
   const targetImage = ImageService.targetImage();
-  const score = await ImageService.scoreImage(image, targetImage);
+  const maxSimilarFeatures = ImageService.maxSimilarFeatures();
+  const score = await ImageService.scoreImage(
+    image,
+    targetImage,
+    maxSimilarFeatures
+  );
 
   await ContestEntry.create({
     index: entries,
     sessionId,
     prompt,
     image,
-    score,
+    score: score.score,
   });
 
   return res.status(HttpStatusCodes.OK).json({ image, index: entries, score });

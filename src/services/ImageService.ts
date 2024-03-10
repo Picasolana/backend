@@ -19,7 +19,7 @@ async function generateImage(prompt: string) {
     width: 1024,
     height: 1024,
     seed: 0,
-    cfg_scale: 5,
+    cfg_scale: 35,
     samples: 1,
     text_prompts: [
       {
@@ -50,11 +50,28 @@ async function generateImage(prompt: string) {
 }
 
 function targetImage() {
-  const imagePath = path.join(__dirname, '../public/images/picasso.jpg');
-  return fs.readFileSync(imagePath).toString('base64');
+  const todayJsonPath = path.join(__dirname, '../public/today.json');
+  const todayJson = JSON.parse(fs.readFileSync(todayJsonPath, 'utf8')) as {
+    generatedImage: string;
+  };
+
+  return todayJson.generatedImage;
 }
 
-async function scoreImage(userImage: string, targetImage: string) {
+function maxSimilarFeatures() {
+  const todayJsonPath = path.join(__dirname, '../public/today.json');
+  const todayJson = JSON.parse(fs.readFileSync(todayJsonPath, 'utf8')) as {
+    score: { maxSimilarFeatures: number };
+  };
+
+  return todayJson.score.maxSimilarFeatures;
+}
+
+async function scoreImage(
+  userImage: string,
+  targetImage: string,
+  maxSimilarFeatures?: number
+) {
   const response = await fetch('http://127.0.0.1:8000/getScore', {
     headers: {
       'Content-Type': 'application/json',
@@ -63,12 +80,10 @@ async function scoreImage(userImage: string, targetImage: string) {
     body: JSON.stringify({
       userImage,
       targetImage,
+      maxSimilarFeatures,
     }),
   });
 
-  if (!response.ok) {
-    throw new Error(`Non-200 response: ${await response.text()}`);
-  }
   const responseJSON = (await response.json()) as unknown;
 
   if (
@@ -76,12 +91,16 @@ async function scoreImage(userImage: string, targetImage: string) {
     typeof responseJSON === 'object' &&
     'score' in responseJSON &&
     typeof responseJSON.score === 'number' &&
-    'status' in responseJSON
+    'maxSimilarFeatures' in responseJSON &&
+    typeof responseJSON.maxSimilarFeatures === 'number'
   ) {
-    return responseJSON.score;
+    return {
+      score: responseJSON.score * 100,
+      maxSimilarFeatures: responseJSON.maxSimilarFeatures,
+    };
   }
 
-  throw new Error('No response');
+  throw new Error('Error scoring image ');
 }
 
 // **** Export default **** //
@@ -90,4 +109,5 @@ export default {
   generateImage,
   scoreImage,
   targetImage,
+  maxSimilarFeatures,
 };

@@ -24,6 +24,7 @@ import { schedule as cronSchedule } from 'node-cron';
 
 import mongoose from 'mongoose';
 import SessionService from './services/SessionService';
+import ContestService from './services/ContestService';
 
 // **** Variables **** //
 
@@ -35,6 +36,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser(EnvVars.CookieProps.Secret));
+ContestService.init('Solana blockchain painted by Picasso.');
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 cronSchedule('*/60 * * * *', SessionService.deleteOldSessions);

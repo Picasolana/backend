@@ -12,7 +12,7 @@ class Score(BaseModel):
     userImage: str 
     maxSimilarFeatures: Optional[int] = None
 
-@app.post("/getScore/")
+@app.post("/getScore")
 async def generateScore(score: Score):
     try:
         print("getting score")
