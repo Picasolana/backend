@@ -22,7 +22,7 @@ with open(IMAGE_DIR / image2, 'rb') as f:
 images = {
   "targetImage": objImg.decode('utf-8'),
   "userImage": usrImg.decode('utf-8'),
-  "maxSimilarFeatures": -1
+  "maxSimilarFeatures": 100
 }
 
 # with open('testjson.json', 'r') as j:

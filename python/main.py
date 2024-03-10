@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from image import getScore
 import base64
 from pydantic import BaseModel
+from typing import Optional
 import json
 
 app = FastAPI()
@@ -9,7 +10,7 @@ app = FastAPI()
 class Score(BaseModel):
     targetImage: str
     userImage: str 
-    maxSimilarFeatures: int
+    maxSimilarFeatures: Optional[int] = None
 
 @app.post("/getScore/")
 async def generateScore(score: Score):
@@ -18,8 +19,6 @@ async def generateScore(score: Score):
         userImage = score.userImage
         targetImage = score.targetImage
         maxSimilarFeatures = score.maxSimilarFeatures
-        if maxSimilarFeatures <= 0:
-            maxSimilarFeatures = None
         score, return_maxFeatures = getScore(
             targetImage=targetImage, userImage=userImage, maxSimilarFeatures=maxSimilarFeatures
         )
