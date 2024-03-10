@@ -7,7 +7,7 @@ import fs from 'fs';
  */
 async function generateImage(prompt: string) {
   const path =
-    'https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image';
+    'https://api.stability.ai/v1/generation/stable-diffusion-v1-6/text-to-image';
 
   const headers = {
     'Content-Type': 'application/json',
@@ -16,9 +16,9 @@ async function generateImage(prompt: string) {
 
   const body = {
     steps: 40,
-    width: 1024,
-    height: 1024,
-    seed: 0,
+    width: 512,
+    height: 512,
+    seed: 1337,
     cfg_scale: 35,
     samples: 1,
     text_prompts: [

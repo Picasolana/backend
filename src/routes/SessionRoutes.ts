@@ -20,9 +20,9 @@ async function createSession(
         .json({ error: 'Telegram handle already in use' });
     }
   }
-  const id = uuidv4();
-  await Session.create({ id });
-  return res.status(HttpStatusCodes.OK).json({ sessionId: id });
+  const sessionId = uuidv4();
+  await Session.create({ sessionId });
+  return res.status(HttpStatusCodes.OK).json({ sessionId });
 }
 
 async function saveSession(
@@ -35,7 +35,7 @@ async function saveSession(
   res: IRes
 ): Promise<IRes> {
   const { sessionId, email, telegramHandle, solanaAddress } = req.body;
-  const session = await Session.findOne({ id: sessionId });
+  const session = await Session.findOne({ sessionId });
   if (!session || session.isSaved) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)

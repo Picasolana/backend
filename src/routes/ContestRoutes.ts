@@ -24,7 +24,7 @@ async function submitPrompt(
   res: IRes
 ): Promise<IRes> {
   const { sessionId, prompt } = req.body;
-  const session = await Session.findOne({ id: sessionId });
+  const session = await Session.findOne({ sessionId });
   if (!session || session.isSaved) {
     return res
       .status(HttpStatusCodes.BAD_REQUEST)
